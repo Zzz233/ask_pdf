@@ -1,3 +1,4 @@
+import shutil
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 import yaml
@@ -120,6 +121,12 @@ def create_or_add():
             return jsonify({"status": "error"})
     except Exception as e:
         print(e)
+        return jsonify({"status": "error"})
+
+    # 递归删除目录以及所有的内容
+    try:
+        shutil.rmtree(dir_path)
+    except Exception:
         return jsonify({"status": "error"})
 
     return jsonify({"status": "success"})
