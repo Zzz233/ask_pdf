@@ -98,7 +98,7 @@ def ask_or_summarize():
         my_data = request.form.to_dict()
         index_name = my_data["index_name"]
         query = my_data["query"]
-        filter = {"file_path": my_data["filter"]} if my_data["filter"] else None·
+        filter = {"file_path": my_data["filter"]} if my_data["filter"] else None
         action = my_data["action"]  # qa or summarize
     except Exception:
         return jsonify({"status": "error"})
