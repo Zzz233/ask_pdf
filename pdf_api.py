@@ -22,14 +22,13 @@ OPENAI_API_KEY = cfg["openai"]["OPENAI_API_KEY"]
 ELASTICSEARCH_URL = cfg["es"]["elasticsearch_url"]
 embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 llm = ChatOpenAI(temperature=0.7, openai_api_key=OPENAI_API_KEY)
-# llm_test = OpenAI(openai_api_key=OPENAI_API_KEY)
 
 
 def _load_pdf_text(dir_path):
     loader = DirectoryLoader(dir_path, glob="**/*.pdf", loader_cls=PyMuPDFLoader)  # TextLoader
     data = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000, chunk_overlap=0)
+        chunk_size=3000, chunk_overlap=300)  # 1000效果差 2000/3000
     texts = text_splitter.split_documents(data)
     return texts
 
@@ -79,10 +78,10 @@ def create_or_add():
         return jsonify({"status": "error"})
 
     # 递归删除目录以及所有的内容
-    try:
-        shutil.rmtree(dir_path)
-    except Exception:
-        return jsonify({"status": "error"})
+    # try:
+    #     shutil.rmtree(dir_path)
+    # except Exception:
+    #     return jsonify({"status": "error"})
 
     return jsonify({"status": "success"})
 
