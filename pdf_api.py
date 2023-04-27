@@ -23,7 +23,6 @@ ELASTICSEARCH_URL = cfg["es"]["elasticsearch_url"]
 embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 llm = ChatOpenAI(temperature=0.7, openai_api_key=OPENAI_API_KEY)
 
-
 def _load_pdf_text(dir_path):
     loader = DirectoryLoader(dir_path, glob="**/*.pdf", loader_cls=PyMuPDFLoader)  # TextLoader
     data = loader.load()
@@ -31,7 +30,6 @@ def _load_pdf_text(dir_path):
         chunk_size=3000, chunk_overlap=300)  # 1000效果差 2000/3000
     texts = text_splitter.split_documents(data)
     return texts
-
 
 @app.route('/put', methods=["POST"])
 def create_or_add():
@@ -47,7 +45,6 @@ def create_or_add():
         action = my_data["action"]  # create or add
     except Exception:
         return jsonify({"status": "error"})
-
     try:
         texts = _load_pdf_text(dir_path)
         elastic_vector_search = ElasticVectorSearch(
@@ -76,7 +73,6 @@ def create_or_add():
     except Exception as e:
         print(e)
         return jsonify({"status": "error"})
-
     # 递归删除目录以及所有的内容
     # try:
     #     shutil.rmtree(dir_path)
@@ -84,7 +80,6 @@ def create_or_add():
     #     return jsonify({"status": "error"})
 
     return jsonify({"status": "success"})
-
 
 @app.route('/ask', methods=["POST"])
 def ask_or_summarize():
@@ -101,7 +96,6 @@ def ask_or_summarize():
         action = my_data["action"]  # qa or summarize
     except Exception:
         return jsonify({"status": "error"})
-
     try:
         elastic_vector_search = ElasticVectorSearch(
             elasticsearch_url=ELASTICSEARCH_URL,
@@ -125,7 +119,6 @@ def ask_or_summarize():
             return jsonify({"status": "error"})
     except Exception:
         return jsonify({"status": "error"})
-
     return jsonify(
         {"status": "success",
          "result": res,
